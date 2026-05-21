@@ -38,24 +38,16 @@ const handlerClerkWebhook = httpAction(async (ctx, req) => {
 
   console.log("🔥 Clerk Webhook Event:", event.type, event.data.id);
 
-  if (event.type === "user.created" || event.type === "user.updated") {
-    const existingUser = await ctx.runQuery(internal.user.get, {
-      clerkId: event.data.id,
-    });
+ if (event.type === "user.created" || event.type === "user.updated") {
+  const payload = {
+    clerkId: event.data.id,
+    username: `${event.data.first_name ?? ""} ${event.data.last_name ?? ""}`.trim(),
+    imageUrl: event.data.image_url ?? "",
+    email: event.data.email_addresses?.[0]?.email_address ?? "",
+  };
 
-    const payload = {
-      clerkId: event.data.id,
-      username: `${event.data.first_name} ${event.data.last_name}`,
-      imageUrl: event.data.image_url,
-      email: event.data.email_addresses[0].email_address,
-    };
-
-    if (existingUser) {
-      await ctx.runMutation(internal.user.update, payload);
-    } else {
-      await ctx.runMutation(internal.user.create, payload);
-    }
-  } else {
+  await ctx.runMutation(internal.user.upsert, payload);
+}else {
     console.log("Clerk webhook event not supported", event.type);
   }
 

@@ -118,16 +118,36 @@ const getLastMessageDetails = async ({
   };
 };
 
-const getMessageContent = (content: {type: "text" | "image" | "video" | "file"; value: string}[]) => {
-  if(!content || content.length === 0) return "";
+const getMessageContent = (
+  content: {
+    type: "text" | "image" | "video" | "file";
+    value: string;
+    fileName?: string;
+    mimeType?: string;
+    size?: number;
+    thumbnail?: string;
+  }[]
+): string => {
+  if (!content || content.length === 0) return "";
 
   const firstItem = content[0];
-  switch(firstItem.type) {
-    case "text": return firstItem.value;
-    case "image": return "image";
-    case "video": return "video";
-    case "file": return "file";
 
-    default: return ["unknown"]
+  if (!firstItem) return "";
+
+  switch (firstItem.type) {
+    case "text":
+      return firstItem.value;
+
+    case "image":
+      return "Image";
+
+    case "video":
+      return "Video";
+
+    case "file":
+      return `${firstItem.fileName || "File"}`;
+
+    default:
+      return "Unknown";
   }
 };

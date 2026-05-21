@@ -12,6 +12,7 @@ type Props = React.PropsWithChildren<{}>;
 
 const ConversationsLayout = ({ children }: Props) => {
   const conversations = useQuery(api.conversations.get);
+  // console.log(conversations.lastMessage?.content);
   return (
     <>
       <ItemList title="Conversations" action={<CreateGroupDialog />}>

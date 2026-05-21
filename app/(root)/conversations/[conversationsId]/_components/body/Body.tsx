@@ -5,7 +5,7 @@ import { useConversation } from "@/hooks/useConversations";
 import { useQuery } from "convex/react";
 import Message from "./Message";
 import { useMutationState } from "@/hooks/useMutationState";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Props = {
@@ -25,13 +25,22 @@ const Body = ({ members }: Props) => {
 
   const { mutate: markRead } = useMutationState(api.conversation.markRead);
 
-  useEffect(() => {
-    if (!messages?.length) return;
+  const lastMarkedRef = useRef<string | null>(null);
 
-    if (messages && messages.length > 0) {
-      markRead({ conversationId, messageId: messages[0]._id });
-    }
-  }, [messages?.length, conversationId, markRead]);
+useEffect(() => {
+  if (!messages?.length || !conversationId) return;
+
+  const lastMessage = messages[0];
+
+  if (lastMarkedRef.current === lastMessage._id) return;
+
+  markRead({
+    conversationId,
+    messageId: lastMessage._id,
+  });
+
+  lastMarkedRef.current = lastMessage._id;
+}, [conversationId, messages]);
 
   const formatSeenBy = (names: string[]) => {
     switch (names.length) {

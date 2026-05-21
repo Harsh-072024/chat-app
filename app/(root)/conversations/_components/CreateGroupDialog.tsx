@@ -57,7 +57,7 @@ const CreateGroupDialog = (props: Props) => {
   const friends = useQuery(api.friends.get);
 
   const { mutate: createGroup, pending } = useMutationState(
-    api.conversation.createGroup
+    api.conversation.createGroup,
   );
 
   const form = useForm<z.infer<typeof createGroupFormSchema>>({
@@ -77,7 +77,7 @@ const CreateGroupDialog = (props: Props) => {
   }, [members?.length, friends?.length]);
 
   const handleSubmit = async (
-    values: z.infer<typeof createGroupFormSchema>
+    values: z.infer<typeof createGroupFormSchema>,
   ) => {
     await createGroup({ name: values.name, members: values.members })
       .then(() => {
@@ -86,7 +86,9 @@ const CreateGroupDialog = (props: Props) => {
       })
       .catch((error) => {
         toast.error(
-          error instanceof ConvexError ? error.data : "Unexpected error occured"
+          error instanceof ConvexError
+            ? error.data
+            : "Unexpected error occured",
         );
       });
   };
@@ -142,7 +144,6 @@ const CreateGroupDialog = (props: Props) => {
                   <FormItem>
                     <FormLabel>Friends</FormLabel>
                     <FormControl>
-                      
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           asChild
@@ -185,40 +186,42 @@ const CreateGroupDialog = (props: Props) => {
               }}
             />
             {members && members.length ? (
-  <Card className="w-full p-2 overflow-x-auto no-scrollbar">
-    <div className="flex flex-nowrap items-center gap-3">
-      {friends
-        ?.filter((friend) => members.includes(friend._id))
-        .map((friend) => (
-          <div key={friend._id} className="flex-shrink-0">
-            <div className="relative">
-              <Avatar>
-                <AvatarImage src={friend.imageUrl} />
-                <AvatarFallback>
-                  {friend.username.substring(0, 1)}
-                </AvatarFallback>
-              </Avatar>
+              <Card className="w-full p-2 overflow-x-auto no-scrollbar">
+                <div className="flex flex-nowrap items-center gap-3">
+                  {friends
+                    ?.filter((friend) => members.includes(friend._id))
+                    .map((friend) => (
+                      <div key={friend._id} className="flex-shrink-0">
+                        <div className="relative">
+                          <Avatar>
+                            <AvatarImage src={friend.imageUrl} />
+                            <AvatarFallback>
+                              {friend.username.substring(0, 1)}
+                            </AvatarFallback>
+                          </Avatar>
 
-              <X
-                className="text-muted-foreground w-4 h-4 absolute -top-1 -right-1 bg-muted rounded-full cursor-pointer"
-                onClick={() =>
-                  form.setValue(
-                    "members",
-                    members.filter((id) => id !== friend._id)
-                  )
-                }
-              />
-            </div>
-          </div>
-        ))}
-    </div>
-  </Card>
-) : null}
- 
+                          <X
+                            className="text-muted-foreground w-4 h-4 absolute -top-1 -right-1 bg-muted rounded-full cursor-pointer"
+                            onClick={() =>
+                              form.setValue(
+                                "members",
+                                members.filter((id) => id !== friend._id),
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </Card>
+            ) : null}
+
             <DialogFooter>
-              <Button disabled={pending} type="submit">Create</Button>
+              <Button disabled={pending} type="submit">
+                Create
+              </Button>
             </DialogFooter>
-          </form> 
+          </form>
         </Form>
       </DialogContent>
     </Dialog>

@@ -30,6 +30,7 @@ const Message = ({
   const formatTime = (timeStamp: number) => {
     return format(timeStamp, "HH:mm");
   };
+
   return (
     <div className={cn("flex items-end", { "justify-end": fromCurrentUser })}>
       <div
@@ -48,7 +49,6 @@ const Message = ({
         >
           <div className="flex flex-col gap-2">
             {content.map((item, i) => {
-              console.log('content item:',i);
               switch (item.type) {
                 case "text":
                   return (
