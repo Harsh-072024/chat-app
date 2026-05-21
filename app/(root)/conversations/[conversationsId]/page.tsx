@@ -31,7 +31,7 @@ const ConversationPage = (props: Props) => {
 
   return conversation === undefined ? (
     <div className="w-full h-full flex items-center justify-center">
-      <Loader2 className="h-8 w-8" />
+      <Loader2 className="h-8 w-8 animate-spin" />
     </div>
   ) : conversation === null ? (
     <p className="w-full h-full flex items-center justify-center">

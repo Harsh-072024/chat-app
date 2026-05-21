@@ -26,7 +26,7 @@ const FriendsPage = (props: Props) => {
             />
           )
         })
-      ) :<Loader2 />}</ItemList>
+      ) :<Loader2  className='animate-spin'/>}</ItemList>
       <ConversationFallback />
     </div>
   )

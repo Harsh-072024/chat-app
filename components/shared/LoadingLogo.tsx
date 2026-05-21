@@ -13,7 +13,7 @@ const LoadingLogo = ({ size = 100 }: Props) => {
         alt="Logo"
         width={size}
         height={size}
-        className="animate-pulse"
+        className="animate-pluse"
         priority
       />
     </div>

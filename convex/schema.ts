@@ -40,7 +40,20 @@ export default defineSchema({
   messages: defineTable({
     senderId: v.id("users"),
     conversationId: v.id("conversations"),
-    type: v.string(),
-    content: v.array(v.string()),
+    content: v.array(v.object({
+      type: v.union(
+        v.literal("text"),
+        v.literal("image"),
+        v.literal("video"),
+        v.literal("file")
+      ),
+      value: v.string(),
+
+      // ✅ metadata (VERY useful)
+      fileName: v.optional(v.string()),
+      mimeType: v.optional(v.string()),
+      size: v.optional(v.number()),
+      thumbnail: v.optional(v.string()),
+    })),
   }).index("by_conversationId", ["conversationId"])
 });

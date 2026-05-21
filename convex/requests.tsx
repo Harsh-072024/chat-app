@@ -9,6 +9,7 @@ export const get = query({args: {},handler: async (ctx, args) => {
         throw new Error("Unauthorized")
     }
 
+    
     const currentUser = await getUserByClerkId({
         ctx, clerkId: identity.subject
     })

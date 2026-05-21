@@ -110,10 +110,7 @@ const getLastMessageDetails = async ({
 
   if (!sender) return null;
 
-  const content = getMessageContent(
-    message.type,
-    message.content as unknown as string
-  );
+  const content = getMessageContent(message.content);
 
   return {
     content,
@@ -121,11 +118,16 @@ const getLastMessageDetails = async ({
   };
 };
 
-const getMessageContent = (type: string, content: string) => {
-  switch (type) {
-    case "text":
-      return content;
-    default:
-      return "[Non-text]";
+const getMessageContent = (content: {type: "text" | "image" | "video" | "file"; value: string}[]) => {
+  if(!content || content.length === 0) return "";
+
+  const firstItem = content[0];
+  switch(firstItem.type) {
+    case "text": return firstItem.value;
+    case "image": return "image";
+    case "video": return "video";
+    case "file": return "file";
+
+    default: return ["unknown"]
   }
 };

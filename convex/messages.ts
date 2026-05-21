@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server";
 import { getUserByClerkId } from "./_utils";
+import { resolveMessageContent } from "./messagesUtils";
 
 export const get = query({
   args: {
@@ -30,15 +31,20 @@ export const get = query({
 
     const messages =  await ctx.db.query("messages").withIndex("by_conversationId", q => q.eq("conversationId",args.id)).order("desc").collect();
 
-    const messagesWithUsers = Promise.all(messages.map(async message => {
+    const messagesWithUsers = await Promise.all(messages.map(async message => {
         const messageSender = await ctx.db.get(message.senderId)
 
         if(!messageSender) {
            throw new ConvexError("Could not find sender of message") 
         }
+        const resolvedContent = await resolveMessageContent({
+            ctx,
+            content: message.content,
+        })
 
         return {
-            message,
+            ...message,
+            content: resolvedContent,
             senderImage: messageSender.imageUrl,
             senderName: messageSender.username,
             isCurrentUser: messageSender._id === currentUser._id,

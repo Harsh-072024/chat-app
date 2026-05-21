@@ -26,8 +26,10 @@ const Body = ({ members }: Props) => {
   const { mutate: markRead } = useMutationState(api.conversation.markRead);
 
   useEffect(() => {
+    if (!messages?.length) return;
+
     if (messages && messages.length > 0) {
-      markRead({ conversationId, messageId: messages[0].message._id });
+      markRead({ conversationId, messageId: messages[0]._id });
     }
   }, [messages?.length, conversationId, markRead]);
 
@@ -71,10 +73,11 @@ const Body = ({ members }: Props) => {
   return (
     <div className="flex-1 w-full flex overflow-y-scroll flex-col-reverse gap-2 p-3 no-scrollbar">
       {messages?.map(
-        ({ message, senderImage, senderName, isCurrentUser }, index) => {
+        (message, index) => {
+          const { senderImage, senderName, isCurrentUser } = message;
           const lastByUser =
-            messages[index - 1]?.message.senderId ===
-            messages[index].message.senderId;
+            messages[index - 1]?.senderId ===
+            messages[index].senderId;
 
           const seenMessage = isCurrentUser
             ? getSeenMessage(message._id)
@@ -90,7 +93,7 @@ const Body = ({ members }: Props) => {
               content={message.content}
               createdAt={message._creationTime}
               seen={seenMessage}
-              type={message.type}
+              
             />
           );
         }
